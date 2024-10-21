@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  oracle-db:
+    image: gvenzl/oracle-xe
+    environment:
+      - ORACLE_PASSWORD=adminpassword
+      - ORACLE_DATABASE=usersdb
+    ports:
+      - "1521:1521"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - oracle-db
