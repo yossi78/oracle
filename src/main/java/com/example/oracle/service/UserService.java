@@ -1,5 +1,5 @@
 package com.example.oracle.service;
-import com.example.oracle.eexception.ResourceNotFoundException;
+import com.example.oracle.exception.ResourceNotFoundException;
 import com.example.oracle.repository.User;
 import com.example.oracle.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,5 @@
 package com.example.oracle.api;
-import com.example.oracle.eexception.ResourceNotFoundException;
+import com.example.oracle.exception.ResourceNotFoundException;
 import com.example.oracle.repository.User;
 import com.example.oracle.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
