@@ -14,3 +14,8 @@ RUN CONTAINER
 docker-compose up
 
 
+OPEN UI IN BROWSER
+-------------------------------------------------------------------------------------------------------------
+#) Open the browser in the following url:
+http://localhost:8080/
+
