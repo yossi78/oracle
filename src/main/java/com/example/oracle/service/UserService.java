@@ -28,6 +28,36 @@ public class UserService {
 
 
     public User getUser(Long userId) {
+        User user = checkUserExistance(userId);
+        return user;
+    }
+
+    public List<User> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        if(users==null){
+            log.error("The users have not been found");
+            throw new ResourceNotFoundException("The users have not been found");
+        }
+        log.info("Retrieved all users, total count: " + users.size());
+        return users;
+    }
+
+
+
+    public void deleteUser(Long userId) {
+        checkUserExistance(userId);
+        userRepository.deleteById(userId);
+    }
+
+
+    public User updateUser(Long userId, User updatedUser) {
+        checkUserExistance(userId);
+        updatedUser.setId(userId);
+        return userRepository.save(updatedUser);
+    }
+
+
+    private User checkUserExistance(Long userId){
         User user =  userRepository.findById(userId).orElse(null);
         if(user==null){
             log.error("The user has not been found , userId="+userId);
@@ -37,23 +67,8 @@ public class UserService {
         return user;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        log.info("Retrieved all users, total count: " + users.size());
-        return users;
-    }
-
-    public User updateUser(Long userId, User updatedUser) {
-        if (userRepository.existsById(userId)) {
-            updatedUser.setId(userId);
-            return userRepository.save(updatedUser);
-        }
-        return null;
-    }
 
 
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
-    }
+
 
 }
