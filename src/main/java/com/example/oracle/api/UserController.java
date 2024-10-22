@@ -45,10 +45,5 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    @GetMapping("/home")
-    public String getHomePage(Model model) {
-        List<User> users =userRepository.findAll(); // Fetch data from service
-        model.addAttribute("users", users); // Pass data to the view
-        return "home"; // Refers to 'home.html' in 'templates' folder
-    }
+
 }
