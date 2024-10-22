@@ -1,48 +1,69 @@
 package com.example.oracle.api;
-
+import com.example.oracle.eexception.ResourceNotFoundException;
 import com.example.oracle.repository.User;
-import com.example.oracle.repository.UserRepository;
+import com.example.oracle.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import lombok.extern.slf4j.Slf4j;
 import java.util.List;
-
 
 
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
+    private final UserService userService;
+
+
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+
+    @GetMapping(path = "/{userId}")
+    public ResponseEntity<User> findUserById(@PathVariable("userId") Long userId) {
+        try {
+            User user = userService.getUser(userId);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            log.error("Failed to get user from DB ");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<User>> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Failed to get all users from DB", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        user.setAge(userDetails.getAge());
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        return userRepository.save(user);
+    @PutMapping("/{userId}")
+    public User updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
+        return userService.updateUser(userId, updatedUser);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
     }
 
 
